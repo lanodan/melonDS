@@ -84,6 +84,7 @@
 #include "SPU.h"
 #include "Wifi.h"
 #include "Platform.h"
+#include "IPC.h"
 #include "LocalMP.h"
 #include "Config.h"
 
@@ -534,6 +535,8 @@ void EmuThread::run()
 
     while (EmuRunning != 0)
     {
+        IPC::Process();
+
         Input::Process();
 
         if (Input::HotkeyPressed(HK_FastForwardToggle)) emit windowLimitFPSChange();
@@ -588,7 +591,7 @@ void EmuThread::run()
 #endif
                 {
                     videoRenderer = 0;
-                }                
+                }
 
                 videoRenderer = oglContext ? Config::_3DRenderer : 0;
 
@@ -2723,6 +2726,9 @@ void MainWindow::onPause(bool checked)
         OSD::AddMessage(0, "Resumed");
         pausedManually = false;
     }
+
+    if (Platform::InstanceID()==0) // HAX
+    IPC::SendCommand(0xFFFF, IPC::Cmd_Pause, 0, nullptr);
 }
 
 void MainWindow::onReset()
@@ -3256,7 +3262,7 @@ int main(int argc, char** argv)
     // easter egg - not worth checking other cases for something so dumb
     if (argc != 0 && (!strcasecmp(argv[0], "derpDS") || !strcasecmp(argv[0], "./derpDS")))
         printf("did you just call me a derp???\n");
-    
+
     Platform::Init(argc, argv);
 
     MelonApplication melon(argc, argv);
@@ -3285,7 +3291,7 @@ int main(int argc, char** argv)
     }
 
     SDL_JoystickEventState(SDL_ENABLE);
-    
+
     SDL_InitSubSystem(SDL_INIT_VIDEO);
     SDL_EnableScreenSaver(); SDL_DisableScreenSaver();
 
