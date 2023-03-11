@@ -78,6 +78,8 @@ signals:
     void windowEmuReset();
     void windowEmuFrameStep();
 
+    void windowIPCPause();
+
     void windowLimitFPSChange();
 
     void screenLayoutChange();
@@ -275,6 +277,7 @@ private slots:
     void onQuit();
 
     void onPause(bool checked);
+    void onIPCPause();
     void onReset();
     void onStop();
     void onFrameStep();
