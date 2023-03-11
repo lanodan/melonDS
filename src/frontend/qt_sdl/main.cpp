@@ -87,7 +87,6 @@
 #include "Wifi.h"
 #include "Platform.h"
 #include "IPC.h"
-#include "LocalMP.h"
 #include "Config.h"
 
 #include "Savestate.h"
@@ -3146,7 +3145,6 @@ void MainWindow::onOpenMPSettings()
 void MainWindow::onMPSettingsFinished(int res)
 {
     audioMute();
-    //LocalMP::SetRecvTimeout(Config::MPRecvTimeout);
     IPC::SetMPRecvTimeout(Config::MPRecvTimeout);
 
     emuThread->emuUnpause();
