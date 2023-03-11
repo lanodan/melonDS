@@ -548,6 +548,9 @@ void EmuThread::run()
 {
     u32 mainScreenPos[3];
 
+    IPC::InitSema();
+    IPC::SetMPRecvTimeout(Config::MPRecvTimeout);
+
     NDS::Init();
 
     mainScreenPos[0] = 0;
@@ -589,7 +592,7 @@ void EmuThread::run()
 
     while (EmuRunning != 0)
     {
-        IPC::Process();
+        IPC::ProcessCommands();
 
         if (IPC::CommandReceived(IPC::Cmd_Pause)) emit windowIPCPause();
 
@@ -848,6 +851,7 @@ void EmuThread::run()
 
     GPU::DeInitRenderer();
     NDS::DeInit();
+    IPC::DeInitSema();
     //Platform::LAN_DeInit();
 }
 
@@ -3142,7 +3146,8 @@ void MainWindow::onOpenMPSettings()
 void MainWindow::onMPSettingsFinished(int res)
 {
     audioMute();
-    LocalMP::SetRecvTimeout(Config::MPRecvTimeout);
+    //LocalMP::SetRecvTimeout(Config::MPRecvTimeout);
+    IPC::SetMPRecvTimeout(Config::MPRecvTimeout);
 
     emuThread->emuUnpause();
 }
@@ -3444,6 +3449,8 @@ int main(int argc, char** argv)
 
     MelonApplication melon(argc, argv);
 
+    IPC::Init();
+
     CLI::CommandLineOptions* options = CLI::ManageArgs(melon);
 
     // http://stackoverflow.com/questions/14543333/joystick-wont-work-using-sdl
@@ -3606,6 +3613,7 @@ int main(int argc, char** argv)
 
     SDL_Quit();
     Platform::DeInit();
+    IPC::DeInit();
     return ret;
 }
 
