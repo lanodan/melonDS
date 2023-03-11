@@ -98,7 +98,6 @@ u16 MPClientMask, MPClientFail;
 
 u8 MPClientReplies[15*1024];
 
-bool MPInited;
 bool LANInited;
 
 int USUntilPowerOn;
@@ -146,11 +145,7 @@ u64 RXTimestamp;
 
 bool Init()
 {
-    //MPInited = false;
     //LANInited = false;
-
-    Platform::MP_Init();
-    MPInited = true;
 
     Platform::LAN_Init();
     LANInited = true;
@@ -162,8 +157,6 @@ bool Init()
 
 void DeInit()
 {
-    if (MPInited)
-        Platform::MP_DeInit();
     if (LANInited)
         Platform::LAN_DeInit();
 
