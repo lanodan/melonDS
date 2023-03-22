@@ -85,6 +85,7 @@
 #include "Wifi.h"
 #include "Platform.h"
 #include "IPC.h"
+#include "Netplay.h"
 #include "Config.h"
 
 #include "Savestate.h"
@@ -497,6 +498,7 @@ void EmuThread::run()
 
     IPC::InitSema();
     IPC::SetMPRecvTimeout(Config::MPRecvTimeout);
+    Netplay::Init();
 
     NDS::Init();
 
@@ -795,6 +797,7 @@ void EmuThread::run()
 
     GPU::DeInitRenderer();
     NDS::DeInit();
+    Netplay::DeInit();
     IPC::DeInitSema();
     //Platform::LAN_DeInit();
 }
