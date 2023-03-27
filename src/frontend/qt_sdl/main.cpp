@@ -431,6 +431,8 @@ EmuThread::EmuThread(QObject* parent) : QThread(parent)
 
     connect(this, SIGNAL(windowIPCPause(bool)), mainWindow, SLOT(onIPCPause(bool)));
 
+    connect(this, SIGNAL(windowIPCPause(bool)), mainWindow, SLOT(onIPCPause(bool)));
+
     static_cast<ScreenPanelGL*>(mainWindow->panel)->transferLayout(this);
 }
 
