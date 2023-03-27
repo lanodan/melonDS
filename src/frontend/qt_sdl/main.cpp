@@ -673,6 +673,8 @@ void EmuThread::run()
             else
             {
                 NDS::SetKeyMask(Input::InputMask);
+                if (Input::Touching) NDS::TouchScreen(Input::TouchX, Input::TouchY);
+                else                 NDS::ReleaseScreen();
             }
 
             if (Input::HotkeyPressed(HK_Lid))
@@ -1116,7 +1118,7 @@ void ScreenHandler::screenOnMousePress(QMouseEvent* event)
     if (Frontend::GetTouchCoords(x, y, false))
     {
         touching = true;
-        NDS::TouchScreen(x, y);
+        Input::TouchScreen(x, y);
     }
 }
 
@@ -1128,7 +1130,7 @@ void ScreenHandler::screenOnMouseRelease(QMouseEvent* event)
     if (touching)
     {
         touching = false;
-        NDS::ReleaseScreen();
+        Input::ReleaseScreen();
     }
 }
 
@@ -1145,7 +1147,7 @@ void ScreenHandler::screenOnMouseMove(QMouseEvent* event)
     int y = event->pos().y();
 
     if (Frontend::GetTouchCoords(x, y, true))
-        NDS::TouchScreen(x, y);
+        Input::TouchScreen(x, y);
 }
 
 void ScreenHandler::screenHandleTablet(QTabletEvent* event)
@@ -1163,14 +1165,14 @@ void ScreenHandler::screenHandleTablet(QTabletEvent* event)
             if (Frontend::GetTouchCoords(x, y, event->type()==QEvent::TabletMove))
             {
                 touching = true;
-                NDS::TouchScreen(x, y);
+                Input::TouchScreen(x, y);
             }
         }
         break;
     case QEvent::TabletRelease:
         if (touching)
         {
-            NDS::ReleaseScreen();
+            Input::ReleaseScreen();
             touching = false;
         }
         break;
@@ -1194,14 +1196,14 @@ void ScreenHandler::screenHandleTouch(QTouchEvent* event)
             if (Frontend::GetTouchCoords(x, y, event->type()==QEvent::TouchUpdate))
             {
                 touching = true;
-                NDS::TouchScreen(x, y);
+                Input::TouchScreen(x, y);
             }
         }
         break;
     case QEvent::TouchEnd:
         if (touching)
         {
-            NDS::ReleaseScreen();
+            Input::ReleaseScreen();
             touching = false;
         }
         break;
